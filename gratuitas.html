@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guías Gratuitas — Kexory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* =====================
+       RESET Y BASE
+    ===================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+   /* =====================
+   CURSOR PERSONALIZADO
+===================== */
+#cursor {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  left: 0; top: 0;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s cubic-bezier(0.23,1,0.32,1),
+              height 0.4s cubic-bezier(0.23,1,0.32,1),
+              background 0.3s ease,
+              opacity 0.3s ease;
+  mix-blend-mode: difference;
+}
+#cursor-ring {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  left: 0; top: 0;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s cubic-bezier(0.23,1,0.32,1),
+              height 0.5s cubic-bezier(0.23,1,0.32,1),
+              border-color 0.3s ease,
+              opacity 0.3s ease;
+}
+#cursor.expanded        { width: 16px; height: 16px; }
+#cursor-ring.expanded   { width: 56px; height: 56px; border-color: rgba(255,255,255,0.9); }
+#cursor.hidden          { opacity: 0; }
+#cursor-ring.hidden     { opacity: 0; }
+
+    /* =====================
+       PARTÍCULAS
+    ===================== */
+    #particles-js {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* =====================
+       LAYOUT GENERAL
+    ===================== */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 80px;
+    }
+
+    /* =====================
+       HEADER
+    ===================== */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 18px 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #logo-kexory {
+      width: 120px;
+      height: auto;
+      display: block;
+      /* AQUÍ VA LA RUTA DE TU LOGO — por ejemplo: src="imagenes/logo.png" */
+    }
+
+    .header-socials {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .header-socials a {
+      display: flex;
+      align-items: center;
+      opacity: 0.75;
+      transition: opacity 0.2s ease;
+      cursor: none;
+    }
+    .header-socials a:hover { opacity: 1; }
+    .header-socials svg { width: 24px; height: 24px; fill: #fff; }
+
+    /* =====================
+       ANIMACIÓN FADEUP
+    ===================== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* =====================
+       SECCIÓN HERO
+    ===================== */
+    #hero {
+      position: relative;
+      z-index: 1;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 80px 60px;
+    }
+
+    .hero-inner { max-width: 640px; }
+
+    .hero-title {
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.05;
+      background: linear-gradient(160deg, #ffffff 40%, #888888 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .hero-subtitle {
+      font-size: 16px;
+      color: #999;
+      line-height: 1.7;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* =====================
+       CUADRÍCULA DE GUÍAS
+    ===================== */
+    #guias {
+      position: relative;
+      z-index: 1;
+      padding: 60px 0 100px;
+    }
+
+    .guias-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .guia-card {
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px;
+      background: rgba(0,0,0,0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+      cursor: none;
+      max-width: 200px;
+      width: 100%;
+      justify-self: center;
+    }
+    .guia-card:hover {
+      border-color: rgba(255,255,255,0.38);
+      transform: translateY(-4px);
+    }
+
+    /* Imagen portada 9:16 */
+    .guia-cover {
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .guia-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .guia-cover-placeholder {
+      width: 100%;
+      height: 100%;
+      background: #151515;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .guia-cover-placeholder span {
+      font-size: 10px;
+      color: #444;
+      text-align: center;
+      padding: 0 10px;
+      line-height: 1.4;
+      /* AQUÍ VA LA PORTADA DE LA GUÍA en formato vertical 9:16 */
+    }
+
+    .guia-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .guia-titulo {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .guia-desc {
+      font-size: 11px;
+      color: #888;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .guia-descargas {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 2px;
+    }
+    .guia-descargas svg { width: 12px; height: 12px; fill: #fff; flex-shrink: 0; }
+    .guia-descargas-count {
+      font-size: 11px;
+      color: #888;
+    }
+
+    .btn-descargar {
+      margin-top: auto;
+      padding: 8px 0;
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 5px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: none;
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    .btn-descargar:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+
+    /* =====================
+       FOOTER
+    ===================== */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 40px 80px;
+      text-align: center;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .footer-socials {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .footer-socials a {
+      display: flex;
+      align-items: center;
+      opacity: 0.5;
+      transition: opacity 0.2s ease;
+      cursor: none;
+    }
+    .footer-socials a:hover { opacity: 1; }
+    .footer-socials svg { width: 20px; height: 20px; fill: #fff; }
+
+    /* =====================
+       RESPONSIVE
+    ===================== */
+    @media (max-width: 768px) {
+      .container { padding: 0 24px; }
+      header { padding: 16px 24px; }
+      footer { padding: 40px 24px; }
+      #hero { padding: 100px 24px 40px; }
+      .hero-title { font-size: 36px; }
+      .guias-grid { grid-template-columns: repeat(2, 1fr); }
+      #guias { padding: 40px 0 80px; }
+    }
+
+    @media (max-width: 480px) {
+      body { font-size: 15px; }
+      .hero-title { font-size: 30px; }
+      .hero-subtitle { font-size: 14px; }
+      .guias-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .guia-card { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CURSOR PERSONALIZADO -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- SISTEMA DE PARTÍCULAS -->
+<div id="particles-js"></div>
+
+<!-- =====================
+     HEADER
+===================== -->
+<header>
+  <!-- AQUÍ VA LA RUTA DE TU LOGO — por ejemplo: src="imagenes/logo.png" -->
+  <img id="logo-kexory" src="imagenes/logo.png" alt="Kexory" onerror="this.style.visibility='hidden'" />
+
+  <div class="header-socials">
+    <!-- AQUÍ VA EL ENLACE DE INSTAGRAM -->
+    <a href="https://www.instagram.com/kexory_/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.336 3.608 1.311.975.975 1.249 2.242 1.311 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.336 2.633-1.311 3.608-.975.975-2.242 1.249-3.608 1.311-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.336-3.608-1.311-.975-.975-1.249-2.242-1.311-3.608C2.175 15.584 2.163 15.204 2.163 12s.012-3.584.07-4.85c.062-1.366.336-2.633 1.311-3.608.975-.975 2.242-1.249 3.608-1.311C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.332.014 7.052.072 5.197.157 3.355.673 2.014 2.014.673 3.355.157 5.197.072 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.085 1.855.601 3.697 1.942 5.038 1.341 1.341 3.183 1.857 5.038 1.942C8.332 23.986 8.741 24 12 24s3.668-.014 4.948-.072c1.855-.085 3.697-.601 5.038-1.942 1.341-1.341 1.857-3.183 1.942-5.038.058-1.28.072-1.689.072-4.948s-.014-3.668-.072-4.948c-.085-1.855-.601-3.697-1.942-5.038C20.645.673 18.803.157 16.948.072 15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+    </a>
+    <!-- AQUÍ VA EL ENLACE DE TIKTOK -->
+    <a href="https://www.tiktok.com/@kexory" target="_blank" rel="noopener" aria-label="TikTok">
+      <svg viewBox="0 0 24 24"><path d="M12.75 2h2.548c.167 1.108.74 2.108 1.607 2.808A5.25 5.25 0 0 0 19.5 6v2.523a7.74 7.74 0 0 1-3.237-.803V14a5.75 5.75 0 1 1-5.75-5.75c.158 0 .314.006.469.018V10.8a3.25 3.25 0 1 0 2.28 3.118V2h-.512z"/></svg>
+    </a>
+    <!-- AQUÍ VA EL ENLACE DE YOUTUBE -->
+    <a href="https://www.youtube.com/@kexory" target="_blank" rel="noopener" aria-label="YouTube">
+      <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- =====================
+     SECCIÓN HERO
+===================== -->
+<section id="hero">
+  <div class="hero-inner fade-up">
+    <h1 class="hero-title">Guías Gratuitas</h1>
+    <p class="hero-subtitle">Recursos para proteger tu vida digital sin necesitar conocimientos técnicos. Descárgalos, compártelos y aplícalos hoy.</p>
+  </div>
+</section>
+
+<!-- =====================
+     CUADRÍCULA DE GUÍAS
+===================== -->
+<section id="guias">
+  <div class="container">
+    <div class="guias-grid" id="guias-grid">
+      <!-- Las tarjetas se generan desde el array de JavaScript -->
+    </div>
+  </div>
+</section>
+
+<!-- =====================
+     FOOTER
+===================== -->
+<footer>
+  <p class="footer-copy">Kexory 2026 — Todos los derechos reservados</p>
+  <div class="footer-socials">
+    <!-- AQUÍ VA EL ENLACE DE INSTAGRAM -->
+    <a href="https://www.instagram.com/kexory_/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.336 3.608 1.311.975.975 1.249 2.242 1.311 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.336 2.633-1.311 3.608-.975.975-2.242 1.249-3.608 1.311-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.336-3.608-1.311-.975-.975-1.249-2.242-1.311-3.608C2.175 15.584 2.163 15.204 2.163 12s.012-3.584.07-4.85c.062-1.366.336-2.633 1.311-3.608.975-.975 2.242-1.249 3.608-1.311C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.332.014 7.052.072 5.197.157 3.355.673 2.014 2.014.673 3.355.157 5.197.072 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.085 1.855.601 3.697 1.942 5.038 1.341 1.341 3.183 1.857 5.038 1.942C8.332 23.986 8.741 24 12 24s3.668-.014 4.948-.072c1.855-.085 3.697-.601 5.038-1.942 1.341-1.341 1.857-3.183 1.942-5.038.058-1.28.072-1.689.072-4.948s-.014-3.668-.072-4.948c-.085-1.855-.601-3.697-1.942-5.038C20.645.673 18.803.157 16.948.072 15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+    </a>
+    <!-- AQUÍ VA EL ENLACE DE TIKTOK -->
+    <a href="https://www.tiktok.com/@kexory" target="_blank" rel="noopener" aria-label="TikTok">
+      <svg viewBox="0 0 24 24"><path d="M12.75 2h2.548c.167 1.108.74 2.108 1.607 2.808A5.25 5.25 0 0 0 19.5 6v2.523a7.74 7.74 0 0 1-3.237-.803V14a5.75 5.75 0 1 1-5.75-5.75c.158 0 .314.006.469.018V10.8a3.25 3.25 0 1 0 2.28 3.118V2h-.512z"/></svg>
+    </a>
+    <!-- AQUÍ VA EL ENLACE DE YOUTUBE -->
+    <a href="https://www.youtube.com/@kexory" target="_blank" rel="noopener" aria-label="YouTube">
+      <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+    </a>
+  </div>
+</footer>
+
+<!-- =====================
+     PARTICLES.JS CDN
+===================== -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+<script>
+  // =====================
+  // ARRAY DE GUÍAS
+  // AQUÍ AGREGAS TUS GUÍAS GRATUITAS — copia un objeto, pégalo al final del array y rellena los datos
+  // =====================
+  const guiasGratis = [
+    {
+      id: 1,
+      titulo: 'REEMPLAZA CON TUS DATOS REALES — Título de la Guía 1',          // REEMPLAZA CON TUS DATOS REALES
+      descripcion: 'REEMPLAZA CON TUS DATOS REALES — Descripción breve de la guía 1.', // REEMPLAZA CON TUS DATOS REALES
+      imagen: '',           // REEMPLAZA CON TUS DATOS REALES — ruta de la portada: imagenes/guia1.jpg
+      archivo: '',          // REEMPLAZA CON TUS DATOS REALES — ruta del PDF: pdfs/guia1.pdf
+      descargas: 128        // REEMPLAZA CON TUS DATOS REALES — número inicial de descargas
+    },
+    {
+      id: 2,
+      titulo: 'REEMPLAZA CON TUS DATOS REALES — Título de la Guía 2',          // REEMPLAZA CON TUS DATOS REALES
+      descripcion: 'REEMPLAZA CON TUS DATOS REALES — Descripción breve de la guía 2.', // REEMPLAZA CON TUS DATOS REALES
+      imagen: '',           // REEMPLAZA CON TUS DATOS REALES — ruta de la portada
+      archivo: '',          // REEMPLAZA CON TUS DATOS REALES — ruta del PDF
+      descargas: 94         // REEMPLAZA CON TUS DATOS REALES
+    },
+    {
+      id: 3,
+      titulo: 'REEMPLAZA CON TUS DATOS REALES — Título de la Guía 3',          // REEMPLAZA CON TUS DATOS REALES
+      descripcion: 'REEMPLAZA CON TUS DATOS REALES — Descripción breve de la guía 3.', // REEMPLAZA CON TUS DATOS REALES
+      imagen: '',           // REEMPLAZA CON TUS DATOS REALES — ruta de la portada
+      archivo: '',          // REEMPLAZA CON TUS DATOS REALES — ruta del PDF
+      descargas: 57         // REEMPLAZA CON TUS DATOS REALES
+    }
+    // AGREGA MÁS GUÍAS AQUÍ — copia el bloque de arriba y pégalo antes del cierre del array
+  ];
+
+  // =====================
+  // RENDERIZAR GUÍAS
+  // =====================
+  function getDescargas(id, base) {
+    const saved = localStorage.getItem('kexory_descargas_' + id);
+    return saved !== null ? parseInt(saved) : base;
+  }
+
+  function setDescargas(id, val) {
+    localStorage.setItem('kexory_descargas_' + id, val);
+  }
+
+  function renderGuias() {
+    const grid = document.getElementById('guias-grid');
+    grid.innerHTML = '';
+
+    guiasGratis.forEach((guia, index) => {
+      const count = getDescargas(guia.id, guia.descargas);
+
+      const card = document.createElement('div');
+      card.className = 'guia-card fade-up';
+      card.style.transitionDelay = (index % 4) * 0.08 + 's';
+
+      const imgHTML = guia.imagen
+        ? `<img src="${guia.imagen}" alt="${guia.titulo}" />`
+        : `<div class="guia-cover-placeholder"><span>AQUÍ VA LA PORTADA DE LA GUÍA<br/>en formato vertical 9:16</span></div>`;
+
+      card.innerHTML = `
+        <div class="guia-cover">${imgHTML}</div>
+        <div class="guia-body">
+          <div class="guia-titulo">${guia.titulo}</div>
+          <div class="guia-desc">${guia.descripcion}</div>
+          <div class="guia-descargas">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z"/>
+            </svg>
+            <span class="guia-descargas-count" id="count-${guia.id}">${count}</span>
+          </div>
+          <button class="btn-descargar" data-id="${guia.id}" data-archivo="${guia.archivo}" data-base="${count}">
+            Descargar gratis
+          </button>
+        </div>
+      `;
+
+      grid.appendChild(card);
+    });
+
+    // Eventos de descarga
+    document.querySelectorAll('.btn-descargar').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const id = this.dataset.id;
+        const archivo = this.dataset.archivo;
+        const countEl = document.getElementById('count-' + id);
+        const current = getDescargas(id, parseInt(this.dataset.base));
+        const newCount = current + 1;
+        setDescargas(id, newCount);
+        countEl.textContent = newCount;
+
+        if (archivo) {
+          const a = document.createElement('a');
+          a.href = archivo;
+          a.download = '';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+      });
+    });
+
+    // Observar tarjetas
+    observeFade();
+  }
+
+  // =====================
+  // ANIMACIÓN FADEUP
+  // =====================
+  function observeFade() {
+  // Agrega fade-up-slow al subtítulo del hero
+  document.querySelectorAll('.hero-subtitle').forEach(el => {
+    el.classList.add('fade-up-slow');
+  });
+
+  // Reemplaza línea decorativa si existe
+  document.querySelectorAll('.section-line').forEach(el => {
+    el.classList.add('draw-line');
+    el.classList.remove('section-line');
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  // Observa TODO — incluyendo tarjetas ya generadas
+  document.querySelectorAll('.fade-up, .fade-up-slow, .reveal-word, .draw-line').forEach((el, i) => {
+    if (el.classList.contains('fade-up') && !el.classList.contains('reveal-word')) {
+      el.style.transitionDelay = el.style.transitionDelay || (i % 4) * 0.07 + 's';
+    }
+    observer.observe(el);
+  });
+}
+
+  // =====================
+  // SISTEMA DE PARTÍCULAS
+  // =====================
+  particlesJS('particles-js', {
+    particles: {
+      number: { value: 60, density: { enable: true, value_area: 900 } },
+      color: { value: '#ffffff' },
+      shape: { type: 'circle' },
+      opacity: { value: 0.25, random: true },
+      size: { value: 2, random: true },
+      line_linked: {
+        enable: true,
+        distance: 140,
+        color: '#ffffff',
+        opacity: 0.08,
+        width: 1
+      },
+      move: {
+        enable: true,
+        speed: 0.6,
+        direction: 'none',
+        random: true,
+        straight: false,
+        out_mode: 'out',
+        bounce: false
+      }
+    },
+    interactivity: {
+      detect_on: 'canvas',
+      events: { onhover: { enable: false }, onclick: { enable: false } }
+    },
+    retina_detect: true
+  });
+
+  // =====================
+// CURSOR PERSONALIZADO AVANZADO
+// =====================
+const cursor     = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mouseX = 0, mouseY = 0;
+let curX = 0,   curY = 0;
+let ringX = 0,  ringY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursor.classList.remove('hidden');
+  cursorRing.classList.remove('hidden');
+});
+document.addEventListener('mouseleave', () => {
+  cursor.classList.add('hidden');
+  cursorRing.classList.add('hidden');
+});
+
+function animateCursor() {
+  // Punto interior — muy pegado al mouse
+  curX += (mouseX - curX) * 0.25;
+  curY += (mouseY - curY) * 0.25;
+  cursor.style.left = curX + 'px';
+  cursor.style.top  = curY + 'px';
+
+  // Anillo exterior — lag más pronunciado, efecto magnético
+  ringX += (mouseX - ringX) * 0.08;
+  ringY += (mouseY - ringY) * 0.08;
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top  = ringY + 'px';
+
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+function refreshCursorTargets() {
+  document.querySelectorAll('a, button, .team-card, .guia-card, .btn, .btn-obtener, .btn-descargar').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.classList.add('expanded');
+      cursorRing.classList.add('expanded');
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.classList.remove('expanded');
+      cursorRing.classList.remove('expanded');
+    });
+  });
+}
+refreshCursorTargets();
+
+  // Iniciar
+  renderGuias();
+  refreshCursorTargets();
+</script>
+
+</body>
+</html>
